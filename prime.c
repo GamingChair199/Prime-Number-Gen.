@@ -8,7 +8,6 @@ void write_primes_range_to_file(int start, int end, const char* filename) {
 
     int sieve_limit = (int)sqrt(end) + 1;
 
-    // 1. Normales Sieb bis sqrt(end) vorbereiten
     int base_size = (sieve_limit - 1) / 2;
     bool* base_prime = malloc(base_size);
     for (int i = 0; i < base_size; i++)
@@ -21,7 +20,6 @@ void write_primes_range_to_file(int start, int end, const char* filename) {
         }
     }
 
-    // 2. Segmentierter Sieb im Bereich [start, end]
     int range = end - start + 1;
     bool* is_prime = malloc(range);
     for (int i = 0; i < range; i++)
@@ -34,7 +32,6 @@ void write_primes_range_to_file(int start, int end, const char* filename) {
         if (base_prime[i]) {
             int p = 2 * i + 3;
 
-            // finde kleinstes Vielfaches von p ≥ start
             int start_index = (start + p - 1) / p * p;
             if (start_index < p * p) start_index = p * p;
 
@@ -44,7 +41,6 @@ void write_primes_range_to_file(int start, int end, const char* filename) {
         }
     }
 
-    // 3. In Datei schreiben
     FILE* f = fopen(filename, "w");
     if (!f) {
         fprintf(stderr, "Fehler beim Öffnen der Datei.\n");
@@ -54,12 +50,12 @@ void write_primes_range_to_file(int start, int end, const char* filename) {
     }
 
     if (start <= 2 && end >= 2)
-        fprintf(f, "2\n"); // 2 manuell hinzufügen
+        fprintf(f, "2\n");
 
     for (int i = 0; i < range; i++) {
         int number = start + i;
         if (number > 2 && number % 2 == 0)
-            continue; // gerade Zahlen >2 überspringen
+            continue;
 
         if (is_prime[i])
             fprintf(f, "%d\n", number);
